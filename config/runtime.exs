@@ -162,7 +162,7 @@ if config_env() != :test do
     reconnect_on_db_close: System.get_env("RECONNECT_ON_DB_CLOSE") == "true",
     api_blocklist: System.get_env("API_TOKEN_BLOCKLIST", "") |> String.split(","),
     metrics_blocklist: System.get_env("METRICS_TOKEN_BLOCKLIST", "") |> String.split(","),
-    node_host: System.get_env("NODE_IP", "::"),
+    node_host: System.get_env("NODE_IP", "127.0.0.1"),
     local_proxy_multiplier: System.get_env("LOCAL_PROXY_MULTIPLIER", "20") |> String.to_integer()
 
   maybe_ipv6 =
