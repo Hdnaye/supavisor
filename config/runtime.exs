@@ -168,6 +168,18 @@ if config_env() != :test do
   maybe_ipv6 =
     if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+if System.get_env("DEBUG_IPV6") in ~w(true 1) do
+  Task.start(fn ->
+    {:ok, uri} = URI.parse(System.get_env("DATABASE_URL")) |> Map.fetch!(:host) |> to_string() |> (&{&1, nil}).()
+    case :inet.getaddr(String.to_charlist(uri), :inet6) do
+      {:ok, addr} ->
+        Logger.info("🛰️  DEBUG_IPV6: Resolved AAAA #{inspect(addr)}")
+      err ->
+        Logger.error("🛰️  DEBUG_IPV6: No AAAA (#{inspect(err)})")
+    end
+  end)
+end
+
   config :supavisor, Supavisor.Repo,
     url: System.get_env("DATABASE_URL", "ecto://postgres:postgres@localhost:6432/postgres"),
     pool_size: System.get_env("DB_POOL_SIZE", "25") |> String.to_integer(),
